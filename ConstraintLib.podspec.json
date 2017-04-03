@@ -4,7 +4,7 @@
     "summary": "Swif library that simplifies interacting with Xcode Constraints.",
     "homepage": "https://github.com/stefanrenne/ConstraintLib",
     "license": {
-        "type": "Apache-2.0", "file": "LICENSE.txt"
+        "type": "Apache-2.0", "file": "LICENSE"
     },
     "source": {
         "git": "https://github.com/stefanrenne/ConstraintLib.git",
