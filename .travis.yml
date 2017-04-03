@@ -1,0 +1,4 @@
+language: objective-c
+osx_image: xcode8.3
+xcode_project: ConstraintLib.xcodeproj
+xcode_scheme: ConstraintLib
