@@ -16,19 +16,64 @@ import UIKit
  */
 public enum PinEdge: Hashable {
     
-    /* Relation to superview */
-    case left, right, bottom, top, centerX, centerY
+    /// leading (left) relation to the views superview
+    case left
     
-    /* Views own relation */
-    case width, height
+    /// trailing (right) relation to the views superview
+    case right
     
-    /* Relation to other view */
-    case leftTo(UIView), rightTo(UIView), bottomTo(UIView), topTo(UIView), equalWidth(UIView), equalHeight(UIView)
+    /// bottom relation to the views superview
+    case bottom
     
+    /// top relation to the views superview
+    case top
+    
+    /// center x relation to the views superview
+    case centerX
+    
+    /// center y relation to the views superview
+    case centerY
+    
+    /// width relation for the view
+    case width
+    
+    /// height relation for the view
+    case height
+    
+    /// pin the left side of the view to the right side of the (in the enum) provided UIView
+    case leftTo(UIView)
+    
+    /// pin the right side of the view to the left side of the (in the enum) provided UIView
+    case rightTo(UIView)
+    
+    /// pin the bottom side of the view to the top side of the (in the enum) provided UIView
+    case bottomTo(UIView)
+    
+    /// pin the top side of the view to the bottom side of the (in the enum) provided UIView
+    case topTo(UIView)
+    
+    /// pin the width of the view to the width of the (in the enum) provided UIView
+    case equalWidth(UIView)
+    
+    /// pin the height of the view to the height of the (in the enum) provided UIView
+    case equalHeight(UIView)
+    
+    /**
+     * Compare two PinEdge's
+     *
+     * - Parameter lhs: first PinEdge
+     * - Parameter rhs: first PinEdge
+     * - Returns: Boolean
+     */
     public static func ==(lhs: PinEdge, rhs: PinEdge) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
+    /**
+     * Unique value for a PinEdge, mainly used for comparising
+     *
+     * - Returns: Int
+     */
     public var hashValue: Int {
         switch self {
         case .left:
@@ -166,6 +211,7 @@ public extension UIView {
      * Add multiple NSLayoutConstraints to a view, provided in an array.
      * The NSLayoutConstraints value's are calculated from the views frame.
      * Make sure the view is first added to a superview.
+     *
      * - Parameter edges: [PinEdge], Array of PinEdge's. Take a look at PinEdge for all options
      */
     public func pin(_ edges: [PinEdge]) {
@@ -178,6 +224,7 @@ public extension UIView {
      * Add multiple NSLayoutConstraints to a view, provided in an dictionary.
      * If the provided value is Nil, then the NSLayoutConstraints value will be calculated from the views frame.
      * Make sure the view is first added to a superview.
+     *
      * - Parameter edges: [PinEdge:Float?], Dicionary of PinEdge's and constant values. Take a look at PinEdge for all options
      */
     public func pin(_ edges: [PinEdge:Float?]) {
@@ -189,6 +236,7 @@ public extension UIView {
     /**
      * Add a NSLayoutConstraint to a view.
      * Make sure the view is first added to a superview.
+     *
      * - Parameter edge: PinEdge, Take a look at PinEdge for all options
      * - Parameter constant: Float?, The amount of spacing in pixels that will be used by the Constrant. If the provided value is Nil, then the NSLayoutConstraints value will be calculated from the views frame
      * - Returns: The created NSLayoutConstraint
@@ -214,6 +262,7 @@ public extension UIView {
     
     /**
      * Find a NSLayoutConstraint for a UIView (or a subclass of UIView)
+     *
      * - Parameter edge: PinEdge, Take a look at PinEdge enum for all options
      */
     public func constraint(_ edge: PinEdge) -> NSLayoutConstraint? {
@@ -261,6 +310,7 @@ public extension UIView {
 public extension UIViewController {
     /**
      * Perform NSLayoutConstraint changes with a animation
+     *
      * - Parameter duration: TimeInterval, The duration of the animation
      * - Parameter constraints: Void completion block in which NSLayoutConstraint constant changes need to be performed
      * - Parameter animations: (Optional) Void completion block in which non NSLayoutConstraint changes need to be performed
@@ -270,9 +320,12 @@ public extension UIViewController {
         self.view.animateConstraints(duration: duration, constraints: constraints, animations: animations, completion: completion)
     }
 }
+
 public extension UIView {
+    
     /**
      * Perform NSLayoutConstraint changes with a animation, perform this call on the highest UIView or use the extension on UIViewController
+     *
      * - Parameter duration: TimeInterval, The duration of the animation
      * - Parameter constraints: Void completion block in which NSLayoutConstraint constant changes need to be performed
      * - Parameter animations: (Optional) Void completion block in which non NSLayoutConstraint changes need to be performed
@@ -289,10 +342,11 @@ public extension UIView {
     
 }
 
-/**
- * Remove a NSLayoutConstraint from the managing view.
- */
 public extension NSLayoutConstraint {
+    
+    /**
+     * Remove a NSLayoutConstraint from the managing view.
+     */
     public func remove() {
         if let secondItem = self.secondItem {
             secondItem.removeConstraint(self)
