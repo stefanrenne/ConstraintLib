@@ -8,7 +8,12 @@
 
 import UIKit
 
-
+/**
+ * This enum represents all current options for adding constraints
+ * .left, .right, .bottom, .top, .centerX, .centerY are relations to the views superview
+ * .width, .height are relations to the view itself
+ * .leftTo(UIView), .rightTo(UIView), .bottomTo(UIView), .topTo(UIView), .equalWidth(UIView), .equalHeight(UIView) are relations from one view to another views
+ */
 public enum PinEdge: Hashable {
     
     /* Relation to superview */
@@ -132,7 +137,7 @@ public enum PinEdge: Hashable {
         
     }
     
-    var flippedConstant: Bool {
+    fileprivate var flippedConstant: Bool {
         switch self {
         case .right, .bottom, .bottomTo, .rightTo:
             return true
@@ -157,18 +162,37 @@ public enum PinEdge: Hashable {
 /* Add Constraints */
 public extension UIView {
     
+    /**
+     * Add multiple NSLayoutConstraints to a view, provided in an array.
+     * The NSLayoutConstraints value's are calculated from the views frame.
+     * Make sure the view is first added to a superview.
+     * - Parameter edges: [PinEdge], Array of PinEdge's. Take a look at PinEdge for all options
+     */
     public func pin(_ edges: [PinEdge]) {
         edges.forEach { (edge) in
             let _ = pin(edge)
         }
     }
     
+    /**
+     * Add multiple NSLayoutConstraints to a view, provided in an dictionary.
+     * If the provided value is Nil, then the NSLayoutConstraints value will be calculated from the views frame.
+     * Make sure the view is first added to a superview.
+     * - Parameter edges: [PinEdge:Float?], Dicionary of PinEdge's and constant values. Take a look at PinEdge for all options
+     */
     public func pin(_ edges: [PinEdge:Float?]) {
         edges.forEach { (edge, constant) in
             let _ = pin(edge, constant: constant)
         }
     }
     
+    /**
+     * Add a NSLayoutConstraint to a view.
+     * Make sure the view is first added to a superview.
+     * - Parameter edge: PinEdge, Take a look at PinEdge for all options
+     * - Parameter constant: Float?, The amount of spacing in pixels that will be used by the Constrant. If the provided value is Nil, then the NSLayoutConstraints value will be calculated from the views frame
+     * - Returns: The created NSLayoutConstraint
+     */
     public func pin(_ edge: PinEdge, constant: Float? = nil) -> NSLayoutConstraint {
         self.translatesAutoresizingMaskIntoConstraints = false
         
@@ -188,6 +212,10 @@ public extension UIView {
 /* Find Constraints */
 public extension UIView {
     
+    /**
+     * Find a NSLayoutConstraint for a UIView (or a subclass of UIView)
+     * - Parameter edge: PinEdge, Take a look at PinEdge enum for all options
+     */
     public func constraint(_ edge: PinEdge) -> NSLayoutConstraint? {
         let attributes = edge.startAttribute
         let endItem = edge.endItem(startView: self)
@@ -230,12 +258,26 @@ public extension UIView {
 }
 
 /* Animate Constraints, perform on a parent view */
-extension UIViewController {
+public extension UIViewController {
+    /**
+     * Perform NSLayoutConstraint changes with a animation
+     * - Parameter duration: TimeInterval, The duration of the animation
+     * - Parameter constraints: Void completion block in which NSLayoutConstraint constant changes need to be performed
+     * - Parameter animations: (Optional) Void completion block in which non NSLayoutConstraint changes need to be performed
+     * - Parameter completion: (Optional) Bool completion block which gets performed after the animation
+     */
     public func animateConstraints(duration: TimeInterval, constraints: () -> Void, animations: (() -> Void)? = nil, completion: ((Bool) -> Void)? = nil) {
         self.view.animateConstraints(duration: duration, constraints: constraints, animations: animations, completion: completion)
     }
 }
-extension UIView {
+public extension UIView {
+    /**
+     * Perform NSLayoutConstraint changes with a animation, perform this call on the highest UIView or use the extension on UIViewController
+     * - Parameter duration: TimeInterval, The duration of the animation
+     * - Parameter constraints: Void completion block in which NSLayoutConstraint constant changes need to be performed
+     * - Parameter animations: (Optional) Void completion block in which non NSLayoutConstraint changes need to be performed
+     * - Parameter completion: (Optional) Bool completion block which gets performed after the animation
+     */
     public func animateConstraints(duration: TimeInterval, constraints: () -> Void, animations: (() -> Void)? = nil, completion: ((Bool) -> Void)? = nil) {
         constraints()
         self.setNeedsLayout()
@@ -247,8 +289,10 @@ extension UIView {
     
 }
 
-/* Easier way of removing constraints */
-extension NSLayoutConstraint {
+/**
+ * Remove a NSLayoutConstraint from the managing view.
+ */
+public extension NSLayoutConstraint {
     public func remove() {
         if let secondItem = self.secondItem {
             secondItem.removeConstraint(self)
