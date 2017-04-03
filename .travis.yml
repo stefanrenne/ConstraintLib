@@ -1,4 +1,27 @@
 language: objective-c
 osx_image: xcode8.3
-xcode_project: ConstraintLib.xcodeproj
-xcode_scheme: ConstraintLib
+branches:
+  only:
+    - master
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - PROJECT=ConstraintLib.xcodeproj
+  - SCHEME=ConstraintLib
+  matrix:
+    - DESTINATION="OS=10.3,name=iPhone 7 Plus" POD_LINT="YES"
+    - DESTINATION="OS=9.0,name=iPhone 6" POD_LINT="NO"
+    - DESTINATION="OS=8.1,name=iPhone 4S" POD_LINT="NO"
+before_install:
+script:
+  - set -o pipefail
+  - xcodebuild -version
+  - xcodebuild -showsdks
+  - xcodebuild clean -project "$PROJECT" -scheme "$SCHEME" | xcpretty
+  - xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty
+
+  # Run `pod lib lint` if specified
+  - if [ $POD_LINT == "YES" ]; then
+      pod lib lint;
+    fi
