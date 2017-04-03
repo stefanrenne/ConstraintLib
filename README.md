@@ -1,7 +1,8 @@
 # ConstraintLib
+[![Travis Badge](https://api.travis-ci.org/stefanrenne/ConstraintLib.svg?branch=master)](https://travis-ci.org/stefanrenne/ConstraintLib)
 [![CocoaPods Version Badge](https://img.shields.io/cocoapods/v/ConstraintLib.svg)](https://cocoapods.org/pods/ConstraintLib)
-[![License Badge](https://img.shields.io/cocoapods/l/ConstraintLib.svg)](LICENSE.txt)
 ![Supported Platforms Badge](https://img.shields.io/cocoapods/p/ConstraintLib.svg)
+[![License Badge](https://img.shields.io/cocoapods/l/ConstraintLib.svg)](LICENSE.txt)
 
 Swift library that simplifies interacting with Xcode Constraints by adding the following features:
 
