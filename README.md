@@ -116,8 +116,19 @@ Next to that there is an optional block for normal animation, one for constraint
     
 ### Example 7: Remove a constraint
 
+Remove a left or leading constraint
+
 	view1.constraint(.left)?.remove()
+
+Remove a horizontal constraint from the right side of `view1` to the left side of `view2`
+
+	view1.constraint(.rightTo(view2))?.remove()
     
+### More demos?
+
+Clone the repository, open `ConstraintLib.xcodeproj` and build the demo project
+
+![Demo Project](ConstraintLibDemoProject.gif)
 
 ## Development Info
 Please document code changes in unit tests and make sure all tests are green.
