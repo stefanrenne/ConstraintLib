@@ -18,6 +18,10 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        /* Insert a view with relations to the top layout guide */
+        let backgroundView = createView(backgroundColor: .gray, title: "Layout Guide View")
+        backgroundView.pin([.topLayoutGuide: 0.0, .left: 0.0, .right: 0.0, .height: 20.0])
+        
         /* Insert a view at the top left corner */
         let view1 = createView(rect: CGRect(x: 50.0, y: 50.0, width: 100.0, height: 100.0), backgroundColor: .red, title: "View 1")
         let _ = view1.pin(.top)

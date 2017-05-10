@@ -27,6 +27,8 @@ class ConstraintLibTests: XCTestCase {
         XCTAssertEqual(PinEdge.topTo(UIView()).hashValue, 12)
         XCTAssertEqual(PinEdge.equalWidth(UIView()).hashValue, 13)
         XCTAssertEqual(PinEdge.equalHeight(UIView()).hashValue, 14)
+        XCTAssertEqual(PinEdge.topLayoutGuide.hashValue, 15)
+        XCTAssertEqual(PinEdge.bottomLayoutGuide.hashValue, 16)
         
         XCTAssertEqual(PinEdge.left, PinEdge.left)
         XCTAssertNotEqual(PinEdge.left, PinEdge.right)
@@ -212,6 +214,47 @@ class ConstraintLibTests: XCTestCase {
         XCTAssertNil(newView.constraint(.left))
         XCTAssertEqual(bottomConstraint, newView.constraint(.bottom))
         XCTAssertEqual(rightConstraint, newView.constraint(.right))
+    }
+    
+    func testItCantFindTheParentViewControllerFromAnUnassignedView() {
+        let newView = UIView(frame: CGRect(x: 50.0, y: 50.0, width: 100.0, height: 100.0))
+        XCTAssertNil(newView.parentViewController)
+    }
+    
+    func testItCanFindTheParentViewController() {
+        
+        let viewcontroller = UIViewController()
+        viewcontroller.view.frame = CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0)
+        
+        let newView = UIView(frame: CGRect(x: 50.0, y: 50.0, width: 100.0, height: 100.0))
+        viewcontroller.view.addSubview(newView)
+        
+        XCTAssertEqual(newView.parentViewController, viewcontroller)
+    }
+    
+    if #available(iOS 9.0, *) {
+        func testItCanPinAViewToTheLayoutGuides() {
+            let viewcontroller = UIViewController()
+            viewcontroller.view.frame = CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0)
+            
+            let newView = UIView()
+            viewcontroller.view.addSubview(newView)
+            
+            let topConstraint = newView.pin(.topLayoutGuide, constant: 2.0)
+            let _ = newView.pin(.left, constant: 0.0)
+            let bottomConstraint = newView.pin(.bottomLayoutGuide, constant: 4.0)
+            let _ = newView.pin(.right, constant: 0.0)
+            
+            /* Validated created constraints */
+            XCTAssertEqual(topConstraint.constant, 2.0)
+            XCTAssertEqual(bottomConstraint.constant, 4.0)
+            
+            XCTAssertEqual(topConstraint.firstItem as? UIView, newView)
+            XCTAssertEqual((topConstraint.secondItem as! UILayoutGuide).owningView, viewcontroller.view)
+            
+            XCTAssertEqual((bottomConstraint.firstItem as! UILayoutGuide).owningView, viewcontroller.view)
+            XCTAssertEqual(bottomConstraint.secondItem as? UIView, newView)
+        }
     }
     
 }

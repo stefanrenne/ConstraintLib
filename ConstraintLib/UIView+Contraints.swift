@@ -58,6 +58,12 @@ public enum PinEdge: Hashable {
     /// pin the height of the view to the height of the (in the enum) provided UIView
     case equalHeight(UIView)
     
+    /// top relation to the views layoutGuide
+    case topLayoutGuide
+    
+    /// bottom relation to the views layoutGuide
+    case bottomLayoutGuide
+    
     /**
      * Compare two PinEdge's
      *
@@ -104,6 +110,10 @@ public enum PinEdge: Hashable {
             return 13
         case .equalHeight:
             return 14
+        case .topLayoutGuide:
+            return 15
+        case .bottomLayoutGuide:
+            return 16
         }
     }
     
@@ -113,9 +123,9 @@ public enum PinEdge: Hashable {
             return [.leading, .left]
         case .right, .rightTo:
             return [.trailing, .right]
-        case .bottom, .bottomTo:
+        case .bottom, .bottomTo, .bottomLayoutGuide:
             return [.bottom]
-        case .top, .topTo:
+        case .top, .topTo, .topLayoutGuide:
             return [.top]
         case .centerX:
             return [.centerX]
@@ -134,9 +144,9 @@ public enum PinEdge: Hashable {
             return [.leading, .left]
         case .right, .leftTo:
             return [.trailing, .right]
-        case .bottom, .topTo:
+        case .bottom, .topTo, .topLayoutGuide:
             return [.bottom]
-        case .top, .bottomTo:
+        case .top, .bottomTo, .bottomLayoutGuide:
             return [.top]
         case .centerX:
             return [.centerX]
@@ -170,12 +180,16 @@ public enum PinEdge: Hashable {
         }
     }
     
-    fileprivate func endItem(startView: UIView) -> UIView? {
+    fileprivate func endItem(startView: UIView) -> AnyObject? {
         switch self {
             case .left, .right, .bottom, .top, .centerX, .centerY:
                 return startView.superview
             case .leftTo(let endItem), .rightTo(let endItem), .bottomTo(let endItem), .topTo(let endItem):
                 return endItem
+            case .bottomLayoutGuide:
+                return startView.parentViewController?.bottomLayoutGuide
+            case .topLayoutGuide:
+                return startView.parentViewController?.topLayoutGuide
             default:
                 return nil
         }
@@ -184,7 +198,7 @@ public enum PinEdge: Hashable {
     
     fileprivate var flippedConstant: Bool {
         switch self {
-        case .right, .bottom, .bottomTo, .rightTo:
+        case .right, .bottom, .bottomTo, .rightTo, .bottomLayoutGuide:
             return true
         default:
             return false
@@ -202,6 +216,23 @@ public enum PinEdge: Hashable {
         }
     }
     
+    
+}
+
+extension UIView {
+    internal var parentViewController: UIViewController? {
+        var parentResponder: UIResponder? = self
+        while parentResponder != nil {
+            guard let newResponder = parentResponder?.next else {
+                break
+            }
+            if let viewController = newResponder as? UIViewController {
+                return viewController
+            }
+            parentResponder = newResponder
+        }
+        return nil
+    }
 }
 
 /* Add Constraints */
@@ -272,23 +303,23 @@ public extension UIView {
         return matches.first
     }
     
-    fileprivate func searchConstaint(endItem: UIView?) -> ((NSLayoutAttribute) -> (NSLayoutConstraint?)) {
+    fileprivate func searchConstaint(endItem: AnyObject?) -> ((NSLayoutAttribute) -> (NSLayoutConstraint?)) {
         return { attribute in
             let constraints = (attribute == .width || attribute == .height) ? self.constraints : self.superview?.constraints
             return constraints?.filter(self.isConstraintWith(attribute: attribute, endItem: endItem)).first
         }
     }
     
-    fileprivate func isConstraintWith(attribute: NSLayoutAttribute, endItem: UIView?) -> ((NSLayoutConstraint) -> (Bool)) {
+    fileprivate func isConstraintWith(attribute: NSLayoutAttribute, endItem: AnyObject?) -> ((NSLayoutConstraint) -> (Bool)) {
         return { constraint in
             
             guard constraint.relation == .equal else {
                 return false
             }
             
-            /* Default case validation */
+            /* Default case validation - UIView */
             if let firstItem = constraint.firstItem as? UIView, firstItem == self && constraint.firstAttribute == attribute {
-                if let secondItem = constraint.secondItem as? UIView, secondItem == endItem {
+                if let secondItem = constraint.secondItem as? UIView, secondItem == endItem as? UIView {
                     return true
                 } else if endItem == nil, constraint.secondItem == nil {
                     return true
@@ -296,7 +327,7 @@ public extension UIView {
             }
             
             /* Flipped case validation */
-            if let firstItem = constraint.firstItem as? UIView, let secondItem = constraint.secondItem as? UIView, firstItem == endItem && constraint.secondAttribute == attribute && secondItem == self {
+            if let firstItem = constraint.firstItem as? UIView, let secondItem = constraint.secondItem as? UIView, firstItem == endItem as? UIView && constraint.secondAttribute == attribute && secondItem == self {
                 return true
             }
             
