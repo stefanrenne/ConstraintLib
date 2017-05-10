@@ -232,8 +232,8 @@ class ConstraintLibTests: XCTestCase {
         XCTAssertEqual(newView.parentViewController, viewcontroller)
     }
     
-    if #available(iOS 9.0, *) {
-        func testItCanPinAViewToTheLayoutGuides() {
+    func testItCanPinAViewToTheLayoutGuides() {
+        if #available(iOS 9.0, *) {
             let viewcontroller = UIViewController()
             viewcontroller.view.frame = CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0)
             
