@@ -72,8 +72,22 @@ To create a view `newView2` where it's top will stick 30 pixels away from the bo
 	self.view.addSubview(newView2)
 	newView2.pin([.left: 100.0, .right: 100.0, .height: 30.0, .topTo(newView1): 30.0])
 
+### Example 5: Pin to the top and/or bottom UILayoutGuide
 
-### Example 5: Find a NSLayoutConstraint from a view
+To pin a view to the ViewController's layout guide's, allowing a view to always stick to the status bar and even the in-call status bar. Use
+
+
+	let topLayoutGuideConstraint = newView1.pin(.topLayoutGuide, constant: 0.0)
+	let bottomLayoutGuideConstraint = newView1.pin(.bottomLayoutGuide, constant: 0.0)
+	
+Or of course one of the other formats.
+
+	let topLayoutGuideConstraint = newView1.pin(.topLayoutGuide)
+	newView1.pin([.topLayoutGuide, .bottomLayoutGuide, .left, .right]
+	newView1.pin([.topLayoutGuide: 0.0, .bottomLayoutGuide: 0.0, .left: 0.0, .right: 0.0]
+
+
+### Example 6: Find a NSLayoutConstraint from a view
 
 Constraints can be found in the following way
 
@@ -93,8 +107,10 @@ Constraints can be found in the following way
 	
 	let equalwidthToView2Constraint = view1.constraint(.equalWidth(view2))
 	let equalHeightToView2Constraint = view1.constraint(.equalHeight(view2))
+	
+Finding a NSLayoutConstraint that is based on a `topLayoutGuide` or `bottomLayoutGuide` is not available yet.
 
-### Example 6: Animate constraint changes
+### Example 7: Animate constraint changes
 
 The animateConstraints functions works similar to the `UIView.animate(withDuration: TimeInterval, animations: Swift.Void)` 
 With as only exception that the animateConstraints must be called on the highest UIView, to make it easier this function has also been added as extension to `UIViewController`.
@@ -114,7 +130,7 @@ Next to that there is an optional block for normal animation, one for constraint
         view1?.backgroundColor = UIColor.blue
     })
     
-### Example 7: Remove a constraint
+### Example 8: Remove a constraint
 
 Remove a left or leading constraint
 
