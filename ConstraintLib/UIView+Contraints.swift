@@ -205,14 +205,14 @@ public enum PinEdge: Hashable {
         }
     }
     
-    fileprivate func createConstraint(startView: UIView, constant: Float) -> NSLayoutConstraint {
+    fileprivate func createConstraint(startView: UIView, constant: Float, multiplier: Float = 1.0) -> NSLayoutConstraint {
         let endItem = self.endItem(startView: startView)
         
         if endItem != nil && flippedConstant {
             /* Flip Contraint when the endItem is out of bound */
-            return NSLayoutConstraint(item: endItem!, attribute: endAttribute.first!, relatedBy: .equal, toItem: startView, attribute: startAttribute.first!, multiplier: 1.0, constant: CGFloat(constant))
+            return NSLayoutConstraint(item: endItem!, attribute: endAttribute.first!, relatedBy: .equal, toItem: startView, attribute: startAttribute.first!, multiplier: CGFloat(multiplier), constant: CGFloat(constant))
         } else {
-            return NSLayoutConstraint(item: startView, attribute: startAttribute.first!, relatedBy: .equal, toItem: endItem, attribute: endAttribute.first!, multiplier: 1.0, constant: CGFloat(constant))
+            return NSLayoutConstraint(item: startView, attribute: startAttribute.first!, relatedBy: .equal, toItem: endItem, attribute: endAttribute.first!, multiplier: CGFloat(multiplier), constant: CGFloat(constant))
         }
     }
     
@@ -270,12 +270,13 @@ public extension UIView {
      *
      * - Parameter edge: PinEdge, Take a look at PinEdge for all options
      * - Parameter constant: Float?, The amount of spacing in pixels that will be used by the Constrant. If the provided value is Nil, then the NSLayoutConstraints value will be calculated from the views frame
+     * - Parameter multiplier: Float, modify the default constraint multiplier
      * - Returns: The created NSLayoutConstraint
      */
-    public func pin(_ edge: PinEdge, constant: Float? = nil) -> NSLayoutConstraint {
+    public func pin(_ edge: PinEdge, constant: Float? = nil, multiplier: Float = 1.0) -> NSLayoutConstraint {
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        let constraint = edge.createConstraint(startView: self, constant: constant ?? edge.defaultConstantFor(view: self))
+        let constraint = edge.createConstraint(startView: self, constant: constant ?? edge.defaultConstantFor(view: self), multiplier: multiplier)
         
         if constraint.secondItem == nil {
             self.addConstraint(constraint)

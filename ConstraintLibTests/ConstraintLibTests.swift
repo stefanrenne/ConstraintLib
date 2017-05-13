@@ -257,4 +257,27 @@ class ConstraintLibTests: XCTestCase {
         }
     }
     
+    func testItCanCreateAMulitplierConstraint() {
+        
+        let viewcontroller = UIViewController()
+        viewcontroller.view.frame = CGRect(x: 0.0, y: 0.0, width: 320.0, height: 480.0)
+        
+        let newView = UIView(frame: CGRect(x: 50.0, y: 50.0, width: 100.0, height: 100.0))
+        viewcontroller.view.addSubview(newView)
+        let topConstraint = newView.pin(.top)
+        let leftConstraint = newView.pin(.left, multiplier: 1.0)
+        let bottomConstraint = newView.pin(.bottom, multiplier: 2.0)
+        let rightConstraint = newView.pin(.right, multiplier: 3.0)
+        
+        /* Find Constraints in tree */
+        XCTAssertEqual(topConstraint.multiplier, 1.0)
+        XCTAssertEqual(topConstraint.multiplier, newView.constraint(.top)?.multiplier)
+        XCTAssertEqual(leftConstraint.multiplier, 1.0)
+        XCTAssertEqual(leftConstraint.multiplier, newView.constraint(.left)?.multiplier)
+        XCTAssertEqual(bottomConstraint.multiplier, 2.0)
+        XCTAssertEqual(bottomConstraint.multiplier, newView.constraint(.bottom)?.multiplier)
+        XCTAssertEqual(rightConstraint.multiplier, 3.0)
+        XCTAssertEqual(rightConstraint.multiplier, newView.constraint(.right)?.multiplier)
+    }
+    
 }
