@@ -87,7 +87,20 @@ Or of course one of the other formats.
 	newView1.pin([.topLayoutGuide: 0.0, .bottomLayoutGuide: 0.0, .left: 0.0, .right: 0.0]
 
 
-### Example 6: Find a NSLayoutConstraint from a view
+### Example 6: Default multiplier
+
+The default multiplier can only be modified in the single line creator
+
+	let newView1 = UIView()
+	self.view.addSubview(newView1)
+	let topConstraint = newView1.pin(.top, constant: 50.0, multiplier: 2.0)
+
+After initialisation, the multiplier can be modified by using the multiplier attribute
+
+	newView1.constraint(.top)?.multiplier = 1.5
+
+
+### Example 7: Find a NSLayoutConstraint from a view
 
 Constraints can be found in the following way
 
@@ -110,7 +123,7 @@ Constraints can be found in the following way
 	
 Finding a NSLayoutConstraint that is based on a `topLayoutGuide` or `bottomLayoutGuide` is not available yet.
 
-### Example 7: Animate constraint changes
+### Example 8: Animate constraint changes
 
 The animateConstraints functions works similar to the `UIView.animate(withDuration: TimeInterval, animations: Swift.Void)` 
 With as only exception that the animateConstraints must be called on the highest UIView, to make it easier this function has also been added as extension to `UIViewController`.
@@ -130,7 +143,7 @@ Next to that there is an optional block for normal animation, one for constraint
         view1?.backgroundColor = UIColor.blue
     })
     
-### Example 8: Remove a constraint
+### Example 9: Remove a constraint
 
 Remove a left or leading constraint
 
