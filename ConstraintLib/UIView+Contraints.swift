@@ -383,7 +383,7 @@ public extension NSLayoutConstraint {
         if let secondItem = self.secondItem {
             secondItem.removeConstraint(self)
         } else {
-            self.firstItem.removeConstraint(self)
+            self.firstItem?.removeConstraint(self)
         }
     }
     
