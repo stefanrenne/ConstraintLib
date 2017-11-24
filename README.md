@@ -12,7 +12,7 @@ Swift library that simplifies interacting with Xcode Constraints by adding the f
 - Animate swift constraints changes
 - Remove constraints from it's superview
 
-This library now requires Swift 3.
+This library now requires Swift 4.
 
 ## Background Info
 I love making custom views and with custom animation. But everytime I do so I find myself writing a lot of constraint code just to manage subviews, create constraint properties and perform animations. Using this category / lib, I managed to make my custom views cude a lot more simple.
